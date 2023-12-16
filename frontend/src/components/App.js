@@ -1,12 +1,16 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import Header from "./layout/Header.js";
+import Dashboard from "./leads/Dashboard.js";
 
 class App extends Component {
   render() {
     return (
-      <div>
+      <Fragment>
         <Header />
-      </div>
+        <div class="container">
+          <Dashboard />
+        </div>
+      </Fragment>
     );
   }
 }
