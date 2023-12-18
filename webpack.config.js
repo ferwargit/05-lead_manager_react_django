@@ -2,6 +2,7 @@ const path = require('path');
 
 module.exports = {
   mode: 'development',
+  devtool: 'source-map',
   entry: './frontend/src/index.js',
   output: {
     path: path.resolve(__dirname, 'frontend/static/frontend'),

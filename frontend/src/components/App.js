@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from "react";
 import Header from "./layout/Header.js";
 import Dashboard from "./leads/Dashboard.js";
+import Alerts from "./layout/Alerts.js";
 
 import { Provider } from "react-redux";
 import store from "../store.js";
@@ -11,6 +12,7 @@ class App extends Component {
       <Provider store={store}>
         <Fragment>
           <Header />
+          <Alerts />
           <div className="container">
             <Dashboard />
           </div>
