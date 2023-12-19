@@ -30,7 +30,7 @@ var getLeads = function getLeads() {
         payload: res.data
       });
     })["catch"](function (err) {
-      return console.log(err);
+      return dispatch((0,_messages__WEBPACK_IMPORTED_MODULE_0__.returnErrors)(err.response.data, err.response.status));
     });
   };
 };
@@ -64,14 +64,7 @@ var addLead = function addLead(lead) {
         payload: res.data
       });
     })["catch"](function (err) {
-      var errors = {
-        msg: err.response.data,
-        status: err.response.status
-      };
-      dispatch({
-        type: _types__WEBPACK_IMPORTED_MODULE_1__.GET_ERRORS,
-        payload: errors
-      });
+      return dispatch((0,_messages__WEBPACK_IMPORTED_MODULE_0__.returnErrors)(err.response.data, err.response.status));
     });
   };
 };
@@ -87,7 +80,8 @@ var addLead = function addLead(lead) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   createMessage: () => (/* binding */ createMessage)
+/* harmony export */   createMessage: () => (/* binding */ createMessage),
+/* harmony export */   returnErrors: () => (/* binding */ returnErrors)
 /* harmony export */ });
 /* harmony import */ var _types__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./types */ "./frontend/src/actions/types.js");
 
@@ -97,6 +91,17 @@ var createMessage = function createMessage(msg) {
   return {
     type: _types__WEBPACK_IMPORTED_MODULE_0__.CREATE_MESSAGE,
     payload: msg
+  };
+};
+
+// RETURN ERRORS
+var returnErrors = function returnErrors(msg, status) {
+  return {
+    type: _types__WEBPACK_IMPORTED_MODULE_0__.GET_ERRORS,
+    payload: {
+      msg: msg,
+      status: status
+    }
   };
 };
 
