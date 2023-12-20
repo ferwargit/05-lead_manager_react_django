@@ -21,7 +21,6 @@ export default function(state = initialState, action) {
         ...state,
         leads: [...state.leads, action.payload]
       };
-
     default:
       return state;
   } 
