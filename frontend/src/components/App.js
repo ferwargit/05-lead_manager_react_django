@@ -7,9 +7,14 @@ import PrivateRoute from "./common/PrivateRoute.js";
 
 import { Provider } from "react-redux";
 import store from "../store.js";
+import { loadUser } from "../actions/auth.js";
 import { HashRouter as Router, Route, Routes } from "react-router-dom";
 
 class App extends Component {
+  componentDidMount() {
+    store.dispatch(loadUser());
+  }
+
   render() {
     return (
       <Provider store={store}>
