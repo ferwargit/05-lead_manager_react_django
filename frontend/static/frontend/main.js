@@ -12,7 +12,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   loadUser: () => (/* binding */ loadUser),
 /* harmony export */   login: () => (/* binding */ login),
-/* harmony export */   logout: () => (/* binding */ logout)
+/* harmony export */   logout: () => (/* binding */ logout),
+/* harmony export */   register: () => (/* binding */ register),
+/* harmony export */   tokenConfig: () => (/* binding */ tokenConfig)
 /* harmony export */ });
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! axios */ "./node_modules/axios/lib/axios.js");
 /* harmony import */ var _messages__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./messages */ "./frontend/src/actions/messages.js");
@@ -29,23 +31,8 @@ var loadUser = function loadUser() {
       type: _types__WEBPACK_IMPORTED_MODULE_1__.USER_LOADING
     });
 
-    // Get token from state.
-    var token = getState().auth.token;
-
-    // Headers
-    var config = {
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    };
-
-    // If token, add to headers config.
-    if (token) {
-      config.headers['Authorization'] = "Token ".concat(token);
-    }
-
     // Make request to backend.
-    axios__WEBPACK_IMPORTED_MODULE_2__["default"].get('/api/auth/user', config).then(function (res) {
+    axios__WEBPACK_IMPORTED_MODULE_2__["default"].get('/api/auth/user', tokenConfig(getState)).then(function (res) {
       dispatch({
         type: _types__WEBPACK_IMPORTED_MODULE_1__.USER_LOADED,
         payload: res.data
@@ -90,12 +77,12 @@ var login = function login(username, password) {
   };
 };
 
-// LOGOUT USER
-var logout = function logout() {
-  return function (dispatch, getState) {
-    // Get token from state.
-    var token = getState().auth.token;
-
+// REGISTER USER
+var register = function register(_ref) {
+  var username = _ref.username,
+    password = _ref.password,
+    email = _ref.email;
+  return function (dispatch) {
     // Headers
     var config = {
       headers: {
@@ -103,13 +90,33 @@ var logout = function logout() {
       }
     };
 
-    // If token, add to headers config.
-    if (token) {
-      config.headers['Authorization'] = "Token ".concat(token);
-    }
+    // Request body
+    var body = JSON.stringify({
+      username: username,
+      email: email,
+      password: password
+    });
 
     // Make request to backend.
-    axios__WEBPACK_IMPORTED_MODULE_2__["default"].post('/api/auth/logout', null, config).then(function (res) {
+    axios__WEBPACK_IMPORTED_MODULE_2__["default"].post('/api/auth/register', body, config).then(function (res) {
+      dispatch({
+        type: _types__WEBPACK_IMPORTED_MODULE_1__.REGISTER_SUCCESS,
+        payload: res.data
+      });
+    })["catch"](function (err) {
+      dispatch((0,_messages__WEBPACK_IMPORTED_MODULE_0__.returnErrors)(err.response.data, err.response.status));
+      dispatch({
+        type: _types__WEBPACK_IMPORTED_MODULE_1__.REGISTER_FAIL
+      });
+    });
+  };
+};
+
+// LOGOUT USER
+var logout = function logout() {
+  return function (dispatch, getState) {
+    // Make request to backend.
+    axios__WEBPACK_IMPORTED_MODULE_2__["default"].post('/api/auth/logout', null, tokenConfig(getState)).then(function (res) {
       dispatch({
         type: _types__WEBPACK_IMPORTED_MODULE_1__.LOGOUT_SUCCESS
       });
@@ -117,6 +124,25 @@ var logout = function logout() {
       dispatch((0,_messages__WEBPACK_IMPORTED_MODULE_0__.returnErrors)(err.response.data, err.response.status));
     });
   };
+};
+
+// Setup config with token - helper function.
+var tokenConfig = function tokenConfig(getState) {
+  // Get token from state.
+  var token = getState().auth.token;
+
+  // Headers
+  var config = {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  };
+
+  // If token, add to headers config.
+  if (token) {
+    config.headers['Authorization'] = "Token ".concat(token);
+  }
+  return config;
 };
 
 /***/ }),
@@ -245,6 +271,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   LOGIN_FAIL: () => (/* binding */ LOGIN_FAIL),
 /* harmony export */   LOGIN_SUCCESS: () => (/* binding */ LOGIN_SUCCESS),
 /* harmony export */   LOGOUT_SUCCESS: () => (/* binding */ LOGOUT_SUCCESS),
+/* harmony export */   REGISTER_FAIL: () => (/* binding */ REGISTER_FAIL),
+/* harmony export */   REGISTER_SUCCESS: () => (/* binding */ REGISTER_SUCCESS),
 /* harmony export */   USER_LOADED: () => (/* binding */ USER_LOADED),
 /* harmony export */   USER_LOADING: () => (/* binding */ USER_LOADING)
 /* harmony export */ });
@@ -259,6 +287,8 @@ var AUTH_ERROR = 'AUTH_ERROR';
 var LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 var LOGIN_FAIL = 'LOGIN_FAIL';
 var LOGOUT_SUCCESS = 'LOGOUT_SUCCESS';
+var REGISTER_SUCCESS = 'REGISTER_SUCCESS';
+var REGISTER_FAIL = 'REGISTER_FAIL';
 
 /***/ }),
 
@@ -1038,7 +1068,7 @@ var initialState = {
         user: action.payload
       });
     case _actions_types__WEBPACK_IMPORTED_MODULE_0__.LOGIN_SUCCESS:
-      // case REGISTER_SUCCESS:
+    case _actions_types__WEBPACK_IMPORTED_MODULE_0__.REGISTER_SUCCESS:
       // The payload is the token.
       localStorage.setItem('token', action.payload.token);
       return _objectSpread(_objectSpread(_objectSpread({}, state), action.payload), {}, {
@@ -1048,7 +1078,7 @@ var initialState = {
     case _actions_types__WEBPACK_IMPORTED_MODULE_0__.AUTH_ERROR:
     case _actions_types__WEBPACK_IMPORTED_MODULE_0__.LOGIN_FAIL:
     case _actions_types__WEBPACK_IMPORTED_MODULE_0__.LOGOUT_SUCCESS:
-      // case REGISTER_FAIL:
+    case _actions_types__WEBPACK_IMPORTED_MODULE_0__.REGISTER_FAIL:
       //   // Remove the token from local storage.
       localStorage.removeItem('token');
       return _objectSpread(_objectSpread({}, state), {}, {
