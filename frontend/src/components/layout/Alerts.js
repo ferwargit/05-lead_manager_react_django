@@ -15,6 +15,7 @@ export class Alerts extends Component {
       if (error.msg.name) Swal.fire('Error', `Name: ${error.msg.name.join()}`, 'error');
       if (error.msg.email) Swal.fire('Error', `Email: ${error.msg.email.join()}`, 'error');
       if (error.msg.message) Swal.fire('Error', `Message: ${error.msg.message.join()}`, 'error');
+      if (error.msg.non_field_errors) Swal.fire('Error', error.msg.non_field_errors.join(), 'error');
     }
 
     if (message !== prevProps.message) {

@@ -16,10 +16,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.views.generic import TemplateView
+from django.urls import re_path
 
 urlpatterns = [
     # path('admin/', admin.site.urls),
     path('', include('frontend.urls')),
     path('', include('leads.urls')),
     path('', include('accounts.urls')),
+    # Asegúrate de que esta ruta esté al final
+    re_path(r'^.*', TemplateView.as_view(template_name='frontend/index.html')),
 ]
